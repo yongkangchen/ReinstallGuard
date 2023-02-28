@@ -1,4 +1,4 @@
-# ReinstallGuard
+# ReinstallGuard for macos
 OnGuard often malfunctions, making it impossible to access the school network. 
 
 To resolve this issue, it is necessary to reinstall OnGuard. 
