@@ -9,3 +9,5 @@ Therefore, this script automatically installs and uninstalls OnGuard for a one-t
 (Note: after installing OnGuard, wait for it to turn green before confirming the uninstallation.)
 
 Simply run this script whenever you cannot access the network.
+
+Download: https://github.com/yongkangchen/ReinstallGuard/releases
