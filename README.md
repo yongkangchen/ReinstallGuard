@@ -12,4 +12,4 @@ Simply run this script whenever you cannot access the network.
 
 Download: https://github.com/yongkangchen/ReinstallGuard/releases
 
-(Important: Please right-click on it after downloading and select "Open" to open it. Do not double-click to open directly.)
+(Important: Please right-click on it after downloading and select "Open" to open it. Do not double-click to open directly. If failed to open, try again.)
