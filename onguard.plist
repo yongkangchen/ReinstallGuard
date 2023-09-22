@@ -9,7 +9,7 @@
   <true/>
   <key>ProgramArguments</key>
   <array>
-    <string>~/bin/onguard.sh</string>
+    <string>/Users/Shared/bin/onguard.sh</string>
   </array>
   <key>WatchPaths</key>
   <array>

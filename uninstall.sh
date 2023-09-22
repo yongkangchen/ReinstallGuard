@@ -1,5 +1,5 @@
-rm -f /usr/local/bin/onguard.sh
+rm -f /Users/Shared/bin/onguard.sh
 launchctl unload ~/Library/LaunchAgents/onguard.plist >> /dev/null 2>&1
 rm -f ~/Library/LaunchAgents/onguard.plist
-rm -f ClearPassOnGuardInstall.dmg
-rm -f ClearPassOnGuardInstall.txt
+rm -f /Users/Shared/bin/ClearPassOnGuardInstall.dmg
+rm -f /Users/Shared/bin/ClearPassOnGuardInstall.txt

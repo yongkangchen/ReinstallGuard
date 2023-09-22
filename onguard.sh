@@ -2,7 +2,7 @@
 
 # exec 1>/dev/null 2>/dev/null
 sleep 2
-
+cd /Users/Shared/bin/
 uninstallpath="/Applications/Aruba Networks/Uninstaller.app/Contents/Resources/clearpassonguarduninstaller.sh"
 uninstall() {
     pkill "ClearPass\ OnGuard"
