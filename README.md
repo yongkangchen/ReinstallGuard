@@ -7,6 +7,7 @@ In fact, once OnGuard turns green, the authentication is successful and it does 
 
 Therefore, this project automatically installs and uninstalls OnGuard for a one-time OnGuard authentication. 
 
+# install
 Simply paste the following command in a macOS Terminal to setup:
 ```
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/yongkangchen/ReinstallGuard/main/install.sh)"
@@ -14,7 +15,7 @@ Simply paste the following command in a macOS Terminal to setup:
 
 After that, you don't need to do anything. Because this tool will automatically check and fix the WIFI network for you.
 
-# Uninstall this tool
+# Uninstall
 
 Simply paste the following command in a macOS Terminal to uninstall this tool:
 ```
