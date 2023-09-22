@@ -3,7 +3,7 @@
 # exec 1>/dev/null 2>/dev/null
 
 if [ -z "$1" ]; then
-    sleep 2    
+    sleep 2
 fi
 
 cd /Users/Shared/bin/
@@ -15,23 +15,6 @@ uninstall() {
         osascript -e 'do shell script "/bin/sh '"$uninstallpath_escaped"' " with administrator privileges with prompt "Tring to uninstall ClearPassOnGuard:"'
     fi
 }
-
-check_eduroam() {
-    SSID=`/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I | awk -F ' SSID: ' '/ SSID:/ {print $2}'`
-    if [ "$SSID" = "eduroam" ]; then
-        curl -sL --head --connect-timeout 3 "https://login.scu.edu" > /dev/null
-        if [[ $? -eq 0 ]]; then
-            uninstall
-            return 0
-        fi
-    fi
-    uninstall
-    return 1
-}
-
-if check_eduroam; then
-    exit 0
-fi
 
 show_dialog() {
     local dialogText="$1"  # 对话框内容
@@ -49,6 +32,24 @@ EOD
         exit 0
     fi
 }
+
+check_eduroam() {
+    SSID=`/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I | awk -F ' SSID: ' '/ SSID:/ {print $2}'`
+    if [ "$SSID" = "eduroam" ]; then
+        curl -sL --head --connect-timeout 3 "https://login.scu.edu" > /dev/null
+        if [[ $? -eq 0 ]]; then
+            uninstall
+            return 0
+        fi
+        return 1
+    fi
+    uninstall
+    return 0
+}
+
+if check_eduroam; then
+    exit 0
+fi
 
 while true; do
     if [[ -d "/Applications/BitdefenderVirusScanner.app" ]]; then
@@ -75,9 +76,20 @@ while true; do
 
     if [ $? -eq 0 ]; then
         hdiutil attach "$filename" -mountpoint "$mountpoint"
+        if [ $? -ne 0 ]; then
+            rm -f "$filename"
+            rm -f "$etag_file"
+            continue
+        fi
 
         shell_command=$(cat <<EOD
             /usr/sbin/installer -pkg "$mountpoint/ClearPassOnGuard.pkg" -target /
+            if [ \$? -ne 0 ]; then
+                rm -f "$filename"
+                rm -f "$etag_file"
+                exit 1
+            fi
+            
             uninstall() {
                 if [ -f "$uninstallpath" ]; then
                     /bin/sh "$uninstallpath"
@@ -93,8 +105,9 @@ while true; do
                     if [[ \$? -eq 0 ]]; then
                         return 0
                     fi
+                    return 1
                 fi
-                return 1
+                return 0
             }
             max_loop_count=60
             loop_count=0
