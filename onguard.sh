@@ -34,15 +34,13 @@ show_dialog() {
     local retryButton="$2"  # 重试按钮的文字
     local user_choice
     user_choice=$(osascript <<EOD
-        tell application "System Events"
-            set buttonRetry to "$retryButton"
-            set buttonQuit to "Quit"
-            set dialogResult to button returned of (display dialog "$dialogText" buttons {buttonRetry, buttonQuit} default button buttonRetry)
-        end tell
+        set buttonRetry to "$retryButton"
+        set buttonQuit to "Quit"
+        set dialogResult to button returned of (display dialog "$dialogText" buttons {buttonRetry, buttonQuit} default button buttonRetry)
         return dialogResult
 EOD
     )
-
+    
     if [ "$user_choice" == "Quit" ]; then
         exit 0
     fi
@@ -121,7 +119,7 @@ EOD
         if [[ $installer_exit_code -ne 0 ]]; then
             hdiutil detach "$mountpoint"
             uninstall
-            show_dialog "Failed to reinstall: $installer_exit_code." "Retry"
+            show_dialog "Failed to reinstall." "Retry"
             DIR="$(cd "$(dirname "$0")" && pwd)"
             exec "$DIR/$(basename "$0")" "$@"
 
