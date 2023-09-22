@@ -17,8 +17,8 @@ uninstall() {
 }
 
 show_dialog() {
-    local dialogText="$1"  # 对话框内容
-    local retryButton="$2"  # 重试按钮的文字
+    local dialogText="$1"
+    local retryButton="$2"
     local user_choice
     user_choice=$(osascript <<EOD
         set buttonRetry to "$retryButton"
