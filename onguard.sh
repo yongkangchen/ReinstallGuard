@@ -116,12 +116,15 @@ EOD
         osascript <<EOD
             do shell script "$shell_command_escaped" with administrator privileges with prompt "Trying to reinstall ClearPassOnGuard"
 EOD
-
-        if [[ $? -ne 0 ]]; then
+        installer_exit_code=$?
+        echo "installer exit code: $installer_exit_code"
+        if [[ $installer_exit_code -ne 0 ]]; then
             hdiutil detach "$mountpoint"
             uninstall
-            show_dialog "Failed to reinstall." "Retry"
-            exec "$0" "$@"
+            show_dialog "Failed to reinstall: $installer_exit_code." "Retry"
+            DIR="$(cd "$(dirname "$0")" && pwd)"
+            exec "$DIR/$(basename "$0")" "$@"
+
             exit 0
         fi
 
