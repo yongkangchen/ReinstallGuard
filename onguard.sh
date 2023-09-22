@@ -2,6 +2,10 @@
 
 # exec 1>/dev/null 2>/dev/null
 
+check_url="https://login.scu.edu"
+app_name="ClearPassOnGuardInstall"
+dmg_url="https://clearpass.scu.edu/agent/installer/mac/$app_name.dmg"
+
 if [ -z "$1" ]; then
     sleep 2
 fi
@@ -36,7 +40,7 @@ EOD
 check_eduroam() {
     SSID=`/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I | awk -F ' SSID: ' '/ SSID:/ {print $2}'`
     if [ "$SSID" = "eduroam" ]; then
-        curl -sL --head --connect-timeout 3 "https://login.scu.edu" > /dev/null
+        curl -sL --head --connect-timeout 3 "$check_url" > /dev/null
         if [[ $? -eq 0 ]]; then
             uninstall
             return 0
@@ -64,11 +68,8 @@ while true; do
     fi
 done
 
-app_name="ClearPassOnGuardInstall"
 filename="$app_name.dmg"
 mountpoint="/Volumes/$app_name"
-dmg_url="https://clearpass.scu.edu/agent/installer/mac/$app_name.dmg"
-
 etag_file="$app_name.txt"
 
 while true; do
@@ -101,7 +102,7 @@ while true; do
             check_eduroam() {
                 SSID=\$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I | awk -F ' SSID: ' '/ SSID:/ {print \$2}')
                 if [ "\$SSID" = "eduroam" ]; then
-                    curl -sL --head --connect-timeout 3 "https://login.scu.edu" > /dev/null
+                    curl -sL --head --connect-timeout 3 "$check_url" > /dev/null
                     if [[ \$? -eq 0 ]]; then
                         return 0
                     fi
