@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # exec 1>/dev/null 2>/dev/null
-sleep 2
+
+if [ -z "$1" ]; then
+    sleep 2    
+fi
+
 cd /Users/Shared/bin/
 uninstallpath="/Applications/Aruba Networks/Uninstaller.app/Contents/Resources/clearpassonguarduninstaller.sh"
 uninstall() {
@@ -18,11 +22,11 @@ check_eduroam() {
         curl -sL --head --connect-timeout 3 "https://login.scu.edu" > /dev/null
         if [[ $? -eq 0 ]]; then
             uninstall
-            return 1
+            return 0
         fi
     fi
     uninstall
-    return 0
+    return 1
 }
 
 if check_eduroam; then
@@ -87,10 +91,10 @@ while true; do
                 if [ "\$SSID" = "eduroam" ]; then
                     curl -sL --head --connect-timeout 3 "https://login.scu.edu" > /dev/null
                     if [[ \$? -eq 0 ]]; then
-                        return 1
+                        return 0
                     fi
                 fi
-                return 0
+                return 1
             }
             max_loop_count=60
             loop_count=0
@@ -121,7 +125,7 @@ EOD
             uninstall
             show_dialog "Failed to reinstall." "Retry"
             DIR="$(cd "$(dirname "$0")" && pwd)"
-            exec "$DIR/$(basename "$0")" "$@"
+            exec "$DIR/$(basename "$0")" "1"
 
             exit 0
         fi
