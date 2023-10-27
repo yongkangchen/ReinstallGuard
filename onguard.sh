@@ -137,6 +137,9 @@ EOD
         if [[ $installer_exit_code -ne 0 ]]; then
             hdiutil detach "$mountpoint"
             uninstall
+            if check_eduroam; then
+                exit 0
+            fi
             show_dialog "Failed to reinstall." "Retry"
             DIR="$(cd "$(dirname "$0")" && pwd)"
             exec "$DIR/$(basename "$0")" "1"
@@ -147,6 +150,9 @@ EOD
         hdiutil detach "$mountpoint"
         break
     else
+        if check_eduroam; then
+            exit 0
+        fi
         show_dialog "Download OnGuard failed. Please check your WIFI connection named eduroam." "Retry"
     fi
 done
