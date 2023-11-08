@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # exec 1>/dev/null 2>/dev/null
-
+net_url="https://www.scu.edu"
 check_url="https://login.scu.edu"
 app_name="ClearPassOnGuardInstall"
 dmg_url="https://clearpass.scu.edu/agent/installer/mac/$app_name.dmg"
@@ -40,6 +40,11 @@ EOD
 check_eduroam() {
     SSID=`/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I | awk -F ' SSID: ' '/ SSID:/ {print $2}'`
     if [ "$SSID" = "eduroam" ]; then
+        curl -sL --head --connect-timeout 3 "$net_url" > /dev/null
+        if [[ $? -ne 0 ]]; then
+            return 0
+        fi
+        
         curl -sL --head --connect-timeout 3 "$check_url" > /dev/null
         if [[ $? -eq 0 ]]; then
             uninstall
@@ -73,9 +78,22 @@ mountpoint="/Volumes/$app_name"
 etag_file="$app_name.txt"
 
 while true; do
-    curl -L -z $filename --remote-time --tcp-fastopen --compressed --etag-compare $etag_file --etag-save $etag_file -f -o $filename $dmg_url
+    curl -L -z $filename --remote-time --tcp-fastopen --compressed --etag-compare $etag_file --etag-save $etag_file.tmp -f -o $filename.tmp $dmg_url
+    ret=$?
+    
+    if [ $ret -eq 0 ]; then
+        if [ -e "$filename.tmp" ]; then
+            mv -f "$filename.tmp" "$filename"
+        fi
 
-    if [ $? -eq 0 ]; then
+        if [ -e "$etag_file.tmp" ]; then
+            mv -f "$etag_file.tmp" "$etag_file"
+        fi
+    else
+        rm -f "$filename.tmp" "$etag_file.tmp"
+    fi
+
+    if [ $ret -eq 0 ]; then
         hdiutil attach "$filename" -mountpoint "$mountpoint"
         if [ $? -ne 0 ]; then
             rm -f "$filename"
@@ -102,6 +120,10 @@ while true; do
             check_eduroam() {
                 SSID=\$(/System/Library/PrivateFrameworks/Apple80211.framework/Versions/A/Resources/airport -I | awk -F ' SSID: ' '/ SSID:/ {print \$2}')
                 if [ "\$SSID" = "eduroam" ]; then
+                    curl -sL --head --connect-timeout 3 "$net_url" > /dev/null
+                    if [[ \$? -ne 0 ]]; then
+                        return 0
+                    fi
                     curl -sL --head --connect-timeout 3 "$check_url" > /dev/null
                     if [[ \$? -eq 0 ]]; then
                         return 0
@@ -122,6 +144,7 @@ while true; do
                 
                 loop_count=\$((loop_count + 1))
                 if [ \$loop_count -ge \$max_loop_count ]; then
+                    uninstall
                     exit 1
                 fi
             done
@@ -136,7 +159,6 @@ EOD
         echo "installer exit code: $installer_exit_code"
         if [[ $installer_exit_code -ne 0 ]]; then
             hdiutil detach "$mountpoint"
-            uninstall
             if check_eduroam; then
                 exit 0
             fi
