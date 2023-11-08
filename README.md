@@ -10,7 +10,7 @@ Therefore, this project automatically installs and uninstalls OnGuard for a one-
 # install
 Simply paste the following command in a macOS Terminal to setup:
 ```
-sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/yongkangchen/ReinstallGuard/main/install.sh)"
+sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/yongkangchen/ReinstallGuard/root/install.sh)"
 ```
 
 After that, you don't need to do anything. Because this tool will automatically check and fix the WIFI network for you.
@@ -19,5 +19,5 @@ After that, you don't need to do anything. Because this tool will automatically 
 
 Simply paste the following command in a macOS Terminal to uninstall this tool:
 ```
-sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/yongkangchen/ReinstallGuard/main/uninstall.sh)"
+sudo /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/yongkangchen/ReinstallGuard/root/uninstall.sh)"
 ```
